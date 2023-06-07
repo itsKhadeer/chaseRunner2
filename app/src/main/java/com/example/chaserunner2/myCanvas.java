@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.media.MediaPlayer;
+import android.provider.MediaStore;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -25,6 +26,7 @@ public class myCanvas extends View {
     Paint grey_brush_fill;
 
     //constants
+    Random r = new Random();
     static int ScreenHeight = getScreenHeight();
     public static int Score = 0;
     public static int HighScore = 0;
@@ -48,8 +50,8 @@ public class myCanvas extends View {
     static int r3Left = ScreenWidth+30, r3Width = 100, r3Right = r3Left+r3Width,
             r3Top = ScreenHeight-STAGE_HEIGHT+100, r3Bottom = r3Top + 70;// rock 3
     //constants for clouds (2 clouds)
-    static int c1Left = ScreenWidth/4, c1Top = 100;// cloud 1
-    static int c2Left = ScreenWidth*3/4, c2Top = 100;// cloud 2
+    static int c1Left = 0, c1Top = 50, c1Right = c1Left+500, c1Bottom = 300;// cloud 1
+    static int c2Left = c1Right + 800, c2Top = 50, c2Right = c2Left+500, c2Bottom = 300;// cloud 2
     Bitmap cloud1;
     Bitmap cloud2;
 
@@ -62,8 +64,9 @@ public class myCanvas extends View {
 
     //constants for the chaser(villain bowser)
     Bitmap chaser;
-    static int chaserLeft = -400,
-    chaserRight = 0,
+    static int chaserLeft = -550,
+
+    chaserRight = -150,
     chaserTop = ScreenHeight-STAGE_HEIGHT-400,
     chaserBottom = ScreenHeight-STAGE_HEIGHT+10;
     static int jumpSpeedForChaser = 28;
@@ -82,8 +85,27 @@ public class myCanvas extends View {
     Bitmap tallObstacle;
     static int tallObstacleLeft = ScreenWidth,
         tallObstacleTop = ScreenHeight-STAGE_HEIGHT-200,
-        tallObstacleRight = tallObstacleLeft+70,
+        tallObstacleRight = tallObstacleLeft+100,
         tallObstacleBottom = ScreenHeight-STAGE_HEIGHT+15;
+    static int flyingObstacleLeft = 0,
+    flyingObstacleRight = flyingObstacleLeft+100,
+    flyingObstacleTop = c1Top+300,
+    flyingObstacleBottom = flyingObstacleTop + 100;
+    static boolean flyingObstacleMovingDown = false;
+    static boolean flyingObstacleFell = true;
+    Bitmap flyingObstacle;
+    boolean flyingObstacleIsComing = true;
+    // powerUps 😅😅👍🏽👍🏽
+    static int invincibleLeft = ScreenWidth,
+    invincibleRight = invincibleLeft+70,
+    invincibleBottom = ScreenHeight-STAGE_HEIGHT-350,
+    invincibleTop = ScreenHeight-STAGE_HEIGHT-420;
+    static int invincibilityTime = 5;
+    static boolean poweredUp = false;
+    static boolean poweredDown = false;
+    static boolean invinciblePowerUp = false;
+    static boolean hasTakenPowerUp = false;
+    Bitmap mushRoom;
 
     //sound
     static MediaPlayer jumpSound;
@@ -91,6 +113,8 @@ public class myCanvas extends View {
     static MediaPlayer deathSound;
     static MediaPlayer heroTheme;
     static MediaPlayer villainTheme;
+    static MediaPlayer powerUpSound;
+    static MediaPlayer powerDownSound;
 
     public myCanvas(Context context) {
         super(context);
@@ -98,13 +122,17 @@ public class myCanvas extends View {
         cloud2 = BitmapFactory.decodeResource(getResources(), R.drawable.img);
         runner = BitmapFactory.decodeResource(getResources(), R.drawable.mario);
         chaser = BitmapFactory.decodeResource(getResources(), R.drawable.bowser);
+        mushRoom = BitmapFactory.decodeResource(getResources(), R.drawable.mushroom);
         shortObstacle = BitmapFactory.decodeResource(getResources(), R.drawable.smallobstacle);
         tallObstacle = BitmapFactory.decodeResource(getResources(), R.drawable.tallobstacle);
+        flyingObstacle = BitmapFactory.decodeResource(getResources(), R.drawable.flyingobstacle);
         jumpSound = MediaPlayer.create(getContext(), R.raw.jumpsound);
         painSound = MediaPlayer.create(getContext(), R.raw.painsound);
         deathSound = MediaPlayer.create(getContext(), R.raw.deathsound);
         heroTheme = MediaPlayer.create(getContext(), R.raw.herotheme);
         villainTheme = MediaPlayer.create(getContext(), R.raw.villantheme);
+        powerUpSound = MediaPlayer.create(getContext(), R.raw.powerupsound);
+        powerDownSound = MediaPlayer.create(getContext(), R.raw.powerdownsound);
         heroTheme.start();
         heroTheme.setLooping(true);
         ScreenHeight = getScreenHeight();
@@ -180,15 +208,21 @@ public class myCanvas extends View {
             r3Right = r3Left+r3Width;
         }
         //clouds
-        canvas.drawBitmap(cloud1,c1Left,c1Top,null);
-        canvas.drawBitmap(cloud2, c2Left, c2Top, null);
+        RectF cloudsL = new RectF(c1Left,c1Top,c1Right,c1Bottom);
+        RectF cloudsR = new RectF(c2Left, c2Top, c2Right, c2Bottom);
+        canvas.drawBitmap(cloud1,null, cloudsL,null);
+        canvas.drawBitmap(cloud2,null, cloudsR, null);
         c1Left -= SPEED_X-SPEED_X*2/3;
-        if (c1Left + cloud1.getWidth() < 0) {
+        c1Right -= SPEED_X-SPEED_X*2/3;
+        if (c1Right < 0) {
             c1Left = ScreenWidth;
+            c1Right = c1Left + 500;
         }
         c2Left -= SPEED_X-SPEED_X*2/3;
-        if (c2Left + cloud2.getWidth() < 0) {
+        c2Right -= SPEED_X-SPEED_X*2/3;
+        if (c2Right < 0) {
             c2Left = ScreenWidth;
+            c2Right = c2Left + 500;
         }
 
         //runner hero
@@ -198,6 +232,8 @@ public class myCanvas extends View {
         //obstacles
         RectF tallObstacleHitBox = new RectF(tallObstacleLeft, tallObstacleTop, tallObstacleRight, tallObstacleBottom);
         RectF smallObstacleHitBox = new RectF(shortObstacleLeft, shortObstacleTop, shortObstacleRight, shortObstacleBottom);
+        RectF flyingObstacleHitBox = new RectF(flyingObstacleLeft, flyingObstacleTop, flyingObstacleRight, flyingObstacleBottom);
+
         if(smallObstacleIsComing) {
 
             canvas.drawBitmap(shortObstacle, null,smallObstacleHitBox , null);
@@ -209,15 +245,25 @@ public class myCanvas extends View {
             if(shortObstacleRight < 0) {
                 shortObstacleLeft = ScreenWidth;
                 shortObstacleRight = shortObstacleLeft+100;
-                Random r = new Random();
                 if(r.nextInt(2) == 0) {
                     smallObstacleIsComing = false;
                 } else {
                     smallObstacleIsComing = true;
                 }
+                if(r.nextInt(2) == 0 && !flyingObstacleIsComing) {
+                    flyingObstacleIsComing = true;
+                }
                 count++;
                 if(count % 4 == 0) if(SPEED_X <= 40) SPEED_X+=1;
                 if(chaserIsChasing) obstaclePassedCount ++;
+                if (r.nextInt(5) == 0 && !hasTakenPowerUp) {
+                    invinciblePowerUp = true;
+                } else {
+                    invinciblePowerUp = false;
+                }
+                if(hasTakenPowerUp) {
+                    invincibilityTime--;
+                }
             }
         }else {
             canvas.drawBitmap(tallObstacle, null, tallObstacleHitBox, null);
@@ -228,24 +274,101 @@ public class myCanvas extends View {
             }
             if (tallObstacleRight < 0) {
                 tallObstacleLeft = ScreenWidth;
-                tallObstacleRight = tallObstacleLeft + 70;
-                Random r = new Random();
+                tallObstacleRight = tallObstacleLeft + 100;
+
                 if(r.nextInt(2) == 0) {
                     smallObstacleIsComing = false;
                 } else {
                     smallObstacleIsComing = true;
                 }
+                if(r.nextInt(2) == 0 && !flyingObstacleIsComing) {
+                    flyingObstacleIsComing = true;
+                }
                 if(count % 4 == 0) if(SPEED_X <= 40) SPEED_X+=1;
-                if(chaserIsChasing) obstaclePassedCount ++;
+                if(chaserIsChasing) obstaclePassedCount++ ;
+                if (r.nextInt(5) == 0 && !hasTakenPowerUp) {
+                    invinciblePowerUp = true;
+                } else {
+                    invinciblePowerUp = false;
+                }
+                if(hasTakenPowerUp) {
+                    invincibilityTime--;
+                }
+            }
+        }
+        canvas.drawBitmap(flyingObstacle,null,flyingObstacleHitBox,null);
+
+        if(flyingObstacleIsComing) {
+
+            flyingObstacleRight-= SPEED_X;
+            flyingObstacleLeft -= SPEED_X;
+            if(flyingObstacleFell) {
+                if (flyingObstacleBottom <= tallObstacleTop) {
+                    flyingObstacleMovingDown = true;
+                } else if (flyingObstacleBottom >= ScreenHeight - STAGE_HEIGHT) {
+                    flyingObstacleMovingDown = false;
+                }
+                if (flyingObstacleMovingDown) {
+                    flyingObstacleTop += 5;
+                    flyingObstacleBottom += 5;
+                } else {
+                    flyingObstacleTop -= 5;
+                    flyingObstacleBottom -= 5;
+                }
+            }
+
+
+            if(flyingObstacleRight < 0) {
+                flyingObstacleLeft = ScreenWidth+800;
+                flyingObstacleRight = flyingObstacleLeft+100;
+                flyingObstacleTop = c1Top+400;
+                flyingObstacleBottom = flyingObstacleTop + 100;
+
+                flyingObstacleIsComing = false;
+            }
+        }
+        // powerUps
+        RectF powerUp = new RectF(invincibleLeft,invincibleTop, invincibleRight, invincibleBottom);
+
+        if(invinciblePowerUp) {
+            canvas.drawBitmap(mushRoom, null, powerUp, null);
+            if(smallObstacleIsComing) {
+                invincibleLeft = shortObstacleLeft;
+                invincibleRight = shortObstacleRight;
+
+            } else {
+                invincibleLeft = tallObstacleLeft;
+                invincibleRight = tallObstacleRight;
             }
 
         }
+        //collision detection for powerUp
+        if(powerUp.intersect(runnerHitBox)) {
+            hasTakenPowerUp = true;
+            invinciblePowerUp = false;
+            poweredUp = false;
+            poweredDown = false;
+            invincibleRight = ScreenWidth + 70;
+            invincibleLeft = ScreenWidth;
+        }
 
+        if(hasTakenPowerUp) {
+
+            if(!poweredUp) powerUpAction();
+            if(invincibilityTime <= 0) {
+                if(!poweredDown) powerUpToNormal();
+            }
+        }
         //collision detection
         RectF chaserHitBox = new RectF(chaserLeft, chaserTop, chaserRight, chaserBottom);
-        canvas.drawBitmap(chaser, null, chaserHitBox, null);
 
-        if(runnerHitBox.intersect(smallObstacleHitBox)){
+        canvas.drawBitmap(chaser, null, chaserHitBox, null);
+        if(chaserHitBox.intersect(flyingObstacleHitBox)) {
+            flyingObstacleFell = false;
+        }
+        if(!flyingObstacleFell) flyingObstacleFalls();
+
+        if(runnerHitBox.intersect(smallObstacleHitBox) && !hasTakenPowerUp){
             heroTheme.pause();
             villainTheme.start();
             villainTheme.setLooping(true);
@@ -267,7 +390,7 @@ public class myCanvas extends View {
                 shortObstacleRight = 0;
             }
         }
-        if(runnerHitBox.intersect(tallObstacleHitBox)) {
+        if(runnerHitBox.intersect(tallObstacleHitBox) && !hasTakenPowerUp) {
             SPEED_X = 0;
             heroTheme.pause();
             painSound.start();
@@ -279,6 +402,21 @@ public class myCanvas extends View {
                 obstaclePassedCount = 0;
                 tallObstacleLeft = -70;
                 tallObstacleRight = 0;
+                chaserIsComing();
+            }
+        }
+        if(runnerHitBox.intersect(flyingObstacleHitBox) && !hasTakenPowerUp && flyingObstacleFell) {
+
+            heroTheme.pause();
+            flyingObstacleFell = false;
+            villainTheme.start();
+            villainTheme.setLooping(true);
+            painSound.start();
+            chaserIsChasing = true;
+            obstacleHit++;
+            if(obstacleHit >=2) {
+                SPEED_X = 0;
+                gameOver = true;
                 chaserIsComing();
             }
         }
@@ -322,8 +460,6 @@ public class myCanvas extends View {
         if(chaserIsChasing) chaserIsComing();
 
         invalidate();
-
-
     }
 
     @Override
@@ -333,6 +469,32 @@ public class myCanvas extends View {
             jumpSound.start();
         }
         return true;
+    }
+    public static void powerUpAction() {
+        if(!powerUpSound.isPlaying()) {
+            powerUpSound.start();
+        }
+        SPEED_X = 0;
+        IS_JUMPING = false;
+        runnerLeft--;runnerRight++;runnerTop--;
+        if(runnerLeft <= ScreenWidth/2-140) {
+            SPEED_X = speedX;
+            poweredUp = true;
+            IS_JUMPING = true;
+        }
+    }
+    public static void powerUpToNormal() {
+        SPEED_X = 0;
+        if(!powerDownSound.isPlaying()) {
+            powerDownSound.start();
+        }
+        runnerLeft+= 2;runnerRight-=2;runnerTop+=2;
+        if(runnerLeft >= ScreenWidth/2-70) {
+            poweredDown = true;
+            hasTakenPowerUp = false;
+            invincibilityTime = 5;
+            SPEED_X = speedX;
+        }
     }
 
     public static void jump() {
@@ -347,6 +509,16 @@ public class myCanvas extends View {
             JUMP_SPEED = 25;
             IS_JUMPING = false;
         }
+    }
+    public static void flyingObstacleFalls() {
+
+        flyingObstacleTop += 30;
+        flyingObstacleBottom += 30;
+        if(flyingObstacleBottom >= 2*ScreenHeight) {
+            flyingObstacleFell = true;
+        }
+
+
     }
     public static void jumpForChaser() {
 
