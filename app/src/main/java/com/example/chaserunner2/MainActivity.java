@@ -20,8 +20,8 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity{
     MediaPlayer calling;
 
-    public static int ScreenHeight = getScreenHeight();
-    public static int ScreenWidth = getScreenWidth();
+    public static int ScreenHeight = Math.min(getScreenHeight(),getScreenWidth());
+    public static int ScreenWidth = Math.max(getScreenHeight(),getScreenWidth());
     TextView highScoreTv;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

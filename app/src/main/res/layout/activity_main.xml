@@ -42,7 +42,6 @@
         app:srcCompat="@drawable/img_1" />
 
     <ImageView
-        android:id="@+id/imageView6"
         android:layout_width="38dp"
         android:layout_height="37dp"
         android:layout_marginTop="100dp"
@@ -76,7 +75,6 @@
         app:srcCompat="@drawable/flyingobstacle" />
 
     <ImageView
-        android:id="@+id/imageView8"
         android:layout_width="184dp"
         android:layout_height="193dp"
         android:layout_marginEnd="-20dp"
@@ -85,7 +83,6 @@
         app:srcCompat="@drawable/mariofaceoff" />
 
     <ImageView
-        android:id="@+id/imageView9"
         android:layout_width="85dp"
         android:layout_height="52dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -110,7 +107,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView10"
         android:layout_width="66dp"
         android:layout_height="38dp"
 

@@ -147,10 +147,10 @@ public class myCanvas extends View {
         HighScore = sharedPreferences.getInt("HighScore", 0);
 
 
-        ScreenHeight = MainActivity.ScreenHeight;
+
         Score = 0;
         gameIsFinallyOver = false;
-        ScreenWidth = MainActivity.ScreenWidth;
+
         STAGE_HEIGHT = 300;
         JUMP_SPEED = 25;
         GRAVITY = 1;
