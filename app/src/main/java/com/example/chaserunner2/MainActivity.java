@@ -1,97 +1,62 @@
 package com.example.chaserunner2;
 
-import androidx.annotation.NonNull;
+import static java.security.AccessController.getContext;
+
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.os.Build;
+import android.content.res.Resources;
+import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.widget.Toast;
+import android.preference.PreferenceManager;
+import android.widget.Button;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
+    MediaPlayer calling;
 
-    boolean heroThemeIsPlaying = false,
-    villainThemeIsPlaying = false,
-    jumpSoundIsPlaying = false,
-    painSoundIsPlaying = false,
-    deathSoundIsPlaying = false,
-    powerUpSoundIsPlaying = false,
-    powerDownSoundIsPlaying = false;            ;
+    public static int ScreenHeight = getScreenHeight();
+    public static int ScreenWidth = getScreenWidth();
+    TextView highScoreTv;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(new myCanvas(this));
-        getWindow().setStatusBarColor(getResources().getColor(R.color.skyBlue, this.getTheme()));
+        setContentView(R.layout.activity_main);
 
+        Button startBtn = findViewById(R.id.startBtn);
+        startBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MainActivity1.class);
+            MainActivity.this.startActivity(intent);
+        });
+        highScoreTv = findViewById(R.id.txtHighScore);
+        calling = MediaPlayer.create(this,R.raw.calling);
+        calling.setLooping(true);
+        highScoreTv.setText(String.valueOf("High Score: "+myCanvas.HighScore));
+        getWindow().setStatusBarColor(getResources().getColor(R.color.skyBlue, this.getTheme()));
     }
 
+
+
+    public static int getScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+    public static int getScreenHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
+    }
     @Override
     protected void onPause() {
         super.onPause();
-        if(myCanvas.heroTheme.isPlaying()) {
-            myCanvas.heroTheme.pause();
-            heroThemeIsPlaying = true;
-        }
-        if(myCanvas.villainTheme.isPlaying()) {
-            myCanvas.villainTheme.pause();
-            villainThemeIsPlaying = true;
-        }
-        if(myCanvas.jumpSound.isPlaying()) {
-            myCanvas.jumpSound.pause();
-            jumpSoundIsPlaying = true;
-        }
-        if(myCanvas.painSound.isPlaying()) {
-            myCanvas.painSound.pause();
-            painSoundIsPlaying = true;
-        }
-        if(myCanvas.deathSound.isPlaying()) {
-            myCanvas.deathSound.pause();
-            deathSoundIsPlaying = true;
-        }
-        if(myCanvas.powerUpSound.isPlaying()) {
-            myCanvas.powerUpSound.pause();
-            powerUpSoundIsPlaying = true;
-        }
-        if(myCanvas.powerDownSound.isPlaying()) {
-            myCanvas.powerDownSound.pause();
-            powerDownSoundIsPlaying = true;
-        }
-    }
+        calling.stop();
 
+    }
     @Override
     protected void onResume() {
         super.onResume();
-
-        if(jumpSoundIsPlaying) {
-            myCanvas.jumpSound.start();
-            jumpSoundIsPlaying = false;
-        }
-        if(heroThemeIsPlaying) {
-            myCanvas.heroTheme.start();
-            heroThemeIsPlaying = false;
-        }
-        if(villainThemeIsPlaying) {
-            myCanvas.villainTheme.start();
-            villainThemeIsPlaying = false;
-        }
-        if(deathSoundIsPlaying) {
-            myCanvas.deathSound.start();
-            deathSoundIsPlaying = false;
-        }
-        if(painSoundIsPlaying) {
-            myCanvas.painSound.start();
-            painSoundIsPlaying = false;
-        }
-        if(powerUpSoundIsPlaying) {
-            myCanvas.powerUpSound.start();
-            powerUpSoundIsPlaying = false;
-        }
-        if(powerDownSoundIsPlaying) {
-            myCanvas.powerDownSound.start();
-            powerDownSoundIsPlaying = false;
-        }
+        calling.start();
     }
 }
