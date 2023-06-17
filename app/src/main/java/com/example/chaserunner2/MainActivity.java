@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity{
     public static int ScreenHeight = Math.min(getScreenHeight(),getScreenWidth());
     public static int ScreenWidth = Math.max(getScreenHeight(),getScreenWidth());
     TextView highScoreTv;
+    SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +37,9 @@ public class MainActivity extends AppCompatActivity{
         highScoreTv = findViewById(R.id.txtHighScore);
         calling = MediaPlayer.create(this,R.raw.calling);
         calling.setLooping(true);
-        highScoreTv.setText(String.valueOf("High Score: "+myCanvas.HighScore));
+        sharedPreferences = getApplicationContext().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
+        int HighScore = sharedPreferences.getInt("HighScore", 0);
+        highScoreTv.setText(String.valueOf("High Score: "+HighScore));
         getWindow().setStatusBarColor(getResources().getColor(R.color.skyBlue, this.getTheme()));
     }
 
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onPause() {
         super.onPause();
-        calling.stop();
+        calling.pause();
 
     }
     @Override

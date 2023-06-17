@@ -33,84 +33,87 @@ public class myCanvas extends View {
     //constants
     Random r = new Random();
     static int ScreenHeight = MainActivity.ScreenHeight;
-    public static int Score = 0;
+    static int ScreenWidth = MainActivity.ScreenWidth;
+    public static int Score ;
     public static int HighScore;
     public static volatile boolean gameIsFinallyOver;
-    static int ScreenWidth = MainActivity.ScreenWidth;
-    static int STAGE_HEIGHT = 300;
-    static int JUMP_SPEED = 25;
-    static int GRAVITY = 1;
-    static int count = 0;
-    static boolean IS_JUMPING = false;
-    static int SPEED_X = 17;
-    static boolean gameOver = false;
-    static int speedX = SPEED_X;
-    static boolean deathSoundPlayed = false;
+    static int STAGE_HEIGHT ;
+    static int JUMP_SPEED ;
+    static int GRAVITY ;
+    static int count ;
+
+    static boolean IS_JUMPING ;
+    static int SPEED_X ;
+    static boolean gameOver ;
+    static int speedX ;
+    static boolean deathSoundPlayed ;
 
     //constants for rocks(3 rocks)
-    static int r1Left = ScreenWidth * 3 / 4 + 30, r1Width = 100, r1Right = r1Left + r1Width,
-            r1Top = ScreenHeight - STAGE_HEIGHT + 50, r1Bottom = r1Top + 40;// rock 1
-    static int r2Left = ScreenWidth / 2, r2Width = 100, r2Right = r2Left + r2Width,
-            r2Top = ScreenHeight - STAGE_HEIGHT + 70, r2Bottom = r2Top + 100;// rock 2
-    static int r3Left = ScreenWidth + 30, r3Width = 100, r3Right = r3Left + r3Width,
-            r3Top = ScreenHeight - STAGE_HEIGHT + 100, r3Bottom = r3Top + 70;// rock 3
+    static int r1Left , r1Width , r1Right ,
+            r1Top , r1Bottom ;// rock 1
+    static int r2Left , r2Width , r2Right ,
+            r2Top , r2Bottom ;// rock 2
+    static int r3Left , r3Width , r3Right ,
+            r3Top , r3Bottom ;// rock 3
     //constants for clouds (2 clouds)
-    static int c1Left = 0, c1Top = 50, c1Right = c1Left + 500, c1Bottom = 300;// cloud 1
-    static int c2Left = c1Right + 800, c2Top = 50, c2Right = c2Left + 500, c2Bottom = 300;// cloud 2
+    static int c1Left , c1Top , c1Right , c1Bottom ;// cloud 1
+    static int c2Left , c2Top , c2Right , c2Bottom ;// cloud 2
     Bitmap cloud1;
     Bitmap cloud2;
 
     // constants for the runner(hero mario)
     Bitmap runner;
-    static int runnerLeft = ScreenWidth / 2 - 70,
-            runnerTop = ScreenHeight - STAGE_HEIGHT - 140,
-            runnerRight = ScreenWidth / 2 + 70,
-            runnerBottom = ScreenHeight - STAGE_HEIGHT;
+    static int runnerLeft ,
+            runnerTop ,
+            runnerRight ,
+            runnerBottom ;
 
     //constants for the chaser(villain bowser)
     Bitmap chaser;
-    static int chaserLeft = -550,
+    static int chaserLeft ,
 
-    chaserRight = -150,
-            chaserTop = ScreenHeight - STAGE_HEIGHT - 400,
-            chaserBottom = ScreenHeight - STAGE_HEIGHT + 10;
-    static int jumpSpeedForChaser = 28;
-    static boolean chaserGoes = false;
-    static boolean chaserIsJumping = false;
-    static boolean chaserIsChasing = false;
-    static int obstaclePassedCount = 0;
-    static int obstacleHit = 0;
+    chaserRight ,
+            chaserTop ,
+            chaserBottom ;
+    static int jumpSpeedForChaser ;
+    static boolean chaserGoes ;
+    static boolean chaserIsJumping ;
+    static boolean chaserIsChasing ;
+    static int obstaclePassedCount ;
+    static int obstacleHit ;
+    static int chaserTimer;
 
     //constants for the obstacles (2 short and tall)
     Bitmap shortObstacle;
-    boolean smallObstacleIsComing = true;
-    static int shortObstacleLeft = ScreenWidth,
-            shortObstacleTop = ScreenHeight - STAGE_HEIGHT - 100,
-            shortObstacleRight = shortObstacleLeft + 100,
-            shortObstacleBottom = ScreenHeight - STAGE_HEIGHT + 15;
+    boolean smallObstacleIsComing ;
+    static int shortObstacleLeft ,
+            shortObstacleTop ,
+            shortObstacleRight ,
+            shortObstacleBottom ;
     Bitmap tallObstacle;
-    static int tallObstacleLeft = ScreenWidth,
-            tallObstacleTop = ScreenHeight - STAGE_HEIGHT - 200,
-            tallObstacleRight = tallObstacleLeft + 100,
-            tallObstacleBottom = ScreenHeight - STAGE_HEIGHT + 15;
-    static int flyingObstacleLeft = -100,
-            flyingObstacleRight = 0,
-            flyingObstacleTop = c1Top + 300,
-            flyingObstacleBottom = flyingObstacleTop + 100;
-    static boolean flyingObstacleMovingDown = false;
-    static boolean flyingObstacleFell = true;
+    static int tallObstacleLeft ,
+            tallObstacleTop ,
+            tallObstacleRight ,
+            tallObstacleBottom ;
+    static int flyingObstacleLeft,
+            flyingObstacleRight ,
+            flyingObstacleTop ,
+            flyingObstacleBottom ;
+    static boolean flyingObstacleMovingDown ;
+    static boolean flyingObstacleFell ;
     Bitmap flyingObstacle;
-    boolean flyingObstacleIsComing = true;
+    boolean flyingObstacleIsComing;
     // powerUps 😅😅👍🏽👍🏽
     static int invincibleLeft = ScreenWidth,
-            invincibleRight = invincibleLeft + 70,
-            invincibleBottom = ScreenHeight - STAGE_HEIGHT - 350,
-            invincibleTop = ScreenHeight - STAGE_HEIGHT - 420;
-    static int invincibilityTime = 5;
-    static boolean poweredUp = false;
-    static boolean poweredDown = false;
-    static boolean invinciblePowerUp = false;
-    static boolean hasTakenPowerUp = false;
+            invincibleRight ,
+            invincibleBottom ,
+            invincibleTop ;
+    static int invincibilityTime;
+    static int probabilityOfGettingMushroom;
+    static boolean poweredUp ;
+    static boolean poweredDown ;
+    static boolean invinciblePowerUp ;
+    static boolean hasTakenPowerUp ;
     Bitmap mushRoom;
 
     //sound
@@ -197,6 +200,7 @@ public class myCanvas extends View {
         chaserBottom = ScreenHeight - STAGE_HEIGHT + 10;
         jumpSpeedForChaser = 28;
         chaserGoes = false;
+        chaserTimer = 5;
         chaserIsJumping = false;
         chaserIsChasing = false;
         obstaclePassedCount = 0;
@@ -219,16 +223,17 @@ public class myCanvas extends View {
         flyingObstacleBottom = flyingObstacleTop + 100;
         flyingObstacleMovingDown = false;
         flyingObstacleFell = true;
-
         flyingObstacleIsComing = true;
         // powerUps 😅😅👍🏽👍🏽
         invincibleLeft = ScreenWidth;
         invincibleRight = invincibleLeft + 70;
         invincibleBottom = ScreenHeight - STAGE_HEIGHT - 350;
         invincibleTop = ScreenHeight - STAGE_HEIGHT - 420;
-        invincibilityTime = 5;
+        invincibilityTime = 10;
+        probabilityOfGettingMushroom = 10;
         poweredUp = false;
-        poweredDown = false;invinciblePowerUp = false;
+        poweredDown = false;
+        invinciblePowerUp = false;
         hasTakenPowerUp = false;
     }
 
@@ -347,23 +352,30 @@ public class myCanvas extends View {
                     flyingObstacleIsComing = true;
                 }
                 count++;
-                if (count % 6 == 0) if (SPEED_X <= 40) SPEED_X++;
-                speedX++;
+                if (count % 6 == 0) if (SPEED_X <= 30) {
+                    SPEED_X++;
+                    speedX++;
+                }
                 if (chaserIsChasing) {
                     obstaclePassedCount++;
-                    if (obstaclePassedCount > 4) {
+                    if (obstaclePassedCount > chaserTimer) {
                         chaserGoes = true;
                         chaserIsChasing = false;
+                        chaserTimer += 7;
                     }
                 }
-
-                if (count % 10 == 0 && !hasTakenPowerUp) {
+                if (r.nextInt(probabilityOfGettingMushroom) == 0 && !hasTakenPowerUp) {
                     invinciblePowerUp = true;
+                    probabilityOfGettingMushroom = 20;
                 } else {
+
                     invinciblePowerUp = false;
+
                 }
                 if (hasTakenPowerUp) {
                     invincibilityTime--;
+                } else {
+                    probabilityOfGettingMushroom--;
                 }
             }
         } else {
@@ -387,33 +399,39 @@ public class myCanvas extends View {
                 if (r.nextInt(2) == 0 && !flyingObstacleIsComing) {
                     flyingObstacleIsComing = true;
                 }
-                if (count % 6 == 0) if (SPEED_X <= 25) SPEED_X++;
-                speedX++;
+                count++;
+                if (count % 6 == 0) if (SPEED_X <= 25) {
+                    SPEED_X++;
+                    speedX++;
+                }
                 if (chaserIsChasing) {
                     obstaclePassedCount++;
-                    if (obstaclePassedCount > 7) {
+                    if (obstaclePassedCount > chaserTimer) {
                         chaserGoes = true;
                         chaserIsChasing = false;
+                        chaserTimer += 7;
                     }
                 }
-                if (count % 10 == 0 && !hasTakenPowerUp) {
+                if (r.nextInt(probabilityOfGettingMushroom) == 0 && !hasTakenPowerUp) {
                     invinciblePowerUp = true;
+                    probabilityOfGettingMushroom = 20;
                 } else {
                     invinciblePowerUp = false;
                 }
                 if (hasTakenPowerUp) {
                     invincibilityTime--;
+                } else {
+                    probabilityOfGettingMushroom--;
                 }
             }
         }
         canvas.drawBitmap(flyingObstacle, null, flyingObstacleHitBox, null);
-
         if (flyingObstacleIsComing) {
 
             flyingObstacleRight -= SPEED_X;
             flyingObstacleLeft -= SPEED_X;
             if (flyingObstacleFell) {
-                if (flyingObstacleBottom <= tallObstacleTop) {
+                if (flyingObstacleBottom <= tallObstacleTop-150) {
                     flyingObstacleMovingDown = true;
                 } else if (flyingObstacleBottom >= ScreenHeight - STAGE_HEIGHT) {
                     flyingObstacleMovingDown = false;
@@ -426,21 +444,22 @@ public class myCanvas extends View {
                     flyingObstacleBottom -= 5;
                 }
             }
-
-
             if (flyingObstacleRight < 0) {
                 flyingObstacleLeft = ScreenWidth + ScreenWidth / 2;
                 flyingObstacleRight = flyingObstacleLeft + 100;
-                flyingObstacleTop = c1Top + 400;
+                flyingObstacleTop = tallObstacleTop+r.nextInt(150);
                 flyingObstacleBottom = flyingObstacleTop + 100;
-
                 flyingObstacleIsComing = false;
                 if (chaserIsChasing) {
                     obstaclePassedCount++;
-                    if (obstaclePassedCount > 7) {
+                    if (obstaclePassedCount > chaserTimer) {
                         chaserGoes = true;
                         chaserIsChasing = false;
+                        chaserTimer += 7;
                     }
+                }
+                if(hasTakenPowerUp) {
+                    invincibilityTime--;
                 }
             }
         }
@@ -456,8 +475,6 @@ public class myCanvas extends View {
                 invincibleLeft = tallObstacleLeft;
                 invincibleRight = tallObstacleRight;
             }
-
-
         }
         //collision detection for powerUp
         if (powerUp.intersect(runnerHitBox) && !gameOver) {
@@ -470,10 +487,13 @@ public class myCanvas extends View {
         }
 
         if (hasTakenPowerUp) {
-
             if (!poweredUp) powerUpAction();
-            if (invincibilityTime <= 0) {
-                if (!poweredDown) powerUpToNormal();
+            if (invincibilityTime <= 0
+                    && !runnerHitBox.intersect(shortObstacleLeft-400,0,shortObstacleRight+100, ScreenHeight)
+                    && !runnerHitBox.intersect(tallObstacleLeft-400,0,tallObstacleRight+100,ScreenHeight)
+                    && !runnerHitBox.intersect(flyingObstacleLeft-400,0,flyingObstacleRight+100,ScreenHeight)
+            ) {
+                powerUpToNormal();
             }
         }
         //collision detection
@@ -493,39 +513,29 @@ public class myCanvas extends View {
             chaserIsChasing = true;
             obstacleHit++;
             if (obstacleHit >= 2) {
-                SPEED_X = 0;
-                speedX = 0;
-//                if(runnerBottom >= ScreenHeight-STAGE_HEIGHT) {
+
                 IS_JUMPING = false;
                 gameOver = true;
-//                    obstaclePassedCount = 0;
                 shortObstacleLeft = -100;
                 shortObstacleRight = 0;
 
-//                }
             } else {
-                SPEED_X = 17;
-                speedX = 17;
                 obstaclePassedCount = 0;
                 shortObstacleTop = ScreenHeight;
                 shortObstacleBottom = ScreenHeight + 100;
             }
         }
         if (runnerHitBox.intersect(tallObstacleHitBox) && !hasTakenPowerUp) {
-            SPEED_X = 0;
-            speedX = 0;
+
             heroTheme.pause();
             painSound.start();
-//            villainTheme.start();
-
-//            if(runnerBottom >= ScreenHeight-STAGE_HEIGHT) {
             IS_JUMPING = false;
             gameOver = true;
             tallObstacleTop = ScreenHeight*2;
             tallObstacleBottom = ScreenHeight*2;
             chaserIsChasing = true;
+            obstaclePassedCount = 0;
 
-//            }
         }
 
         if (runnerHitBox.intersect(flyingObstacleHitBox) && !hasTakenPowerUp && flyingObstacleFell) {
@@ -537,12 +547,10 @@ public class myCanvas extends View {
             painSound.start();
             chaserIsChasing = true;
             obstacleHit++;
-            SPEED_X = 17;
-            speedX = 17;
+
+            obstaclePassedCount = 0;
             if (obstacleHit >= 2) {
                 IS_JUMPING = false;
-                SPEED_X = 0;
-                speedX = 0;
                 gameOver = true;
 
             }
@@ -550,14 +558,10 @@ public class myCanvas extends View {
 
         //gameOver
         if (gameOver) {
-
             SPEED_X = 0;
-            speedX = 0;
-//            if(!chaserHitBox.intersect(runnerHitBox)) {
-            if (chaserRight <= runnerLeft + 150) {
+            if (chaserRight <= runnerLeft + 175) {
                 chaserRight += 40;
                 chaserLeft += 40;
-//                }
             } else {
                 villainTheme.stop();
                 if (!deathSoundPlayed) {
@@ -575,7 +579,9 @@ public class myCanvas extends View {
         }
         black_brush_fill.setTextSize(50);
         if (!gameOver) {
-            canvas.drawText("Score: " + Score++, 50, 100, black_brush_fill);
+            Score += SPEED_X-16>0?SPEED_X-16:SPEED_X;
+            canvas.drawText("Score: " + Score, 50, 100, black_brush_fill);
+            canvas.drawText("multiplier: " + (SPEED_X-16>0?SPEED_X-16:SPEED_X), 400, 100, black_brush_fill);
         } else {
             HighScore = Math.max(HighScore, Score);
             SharedPreferences.Editor myEdit = sharedPreferences.edit();
@@ -585,6 +591,7 @@ public class myCanvas extends View {
 
         }
         canvas.drawText(("High Score: " + HighScore), ScreenWidth - 500, 100, black_brush_fill);
+
         if (chaserIsJumping) jumpForChaser();
         if (chaserGoes) chaserIsGoing();
         if (chaserIsChasing) chaserIsComing();
@@ -635,8 +642,7 @@ public class myCanvas extends View {
         runnerRight++;
         runnerTop--;
         if (runnerLeft <= ScreenWidth / 2 - 140) {
-            SPEED_X = 17;
-            speedX = 17;
+            SPEED_X = speedX;
             poweredUp = true;
             IS_JUMPING = true;
         }
@@ -653,7 +659,7 @@ public class myCanvas extends View {
         if (runnerLeft >= ScreenWidth / 2 - 70) {
             poweredDown = true;
             hasTakenPowerUp = false;
-            invincibilityTime = 5;
+            invincibilityTime = 10;
             SPEED_X = speedX;
         }
     }
@@ -696,24 +702,26 @@ public class myCanvas extends View {
     }
 
     public static void chaserIsComing() {
+        if(!villainTheme.isPlaying()) {
+            villainTheme.start();
+            villainTheme.setLooping(true);
+        }
         if ((chaserLeft + chaserRight) / 2 <= ScreenWidth / 4) {
             chaserRight += speedX;
             chaserLeft += speedX;
-            SPEED_X = 10;
-        } else {
 
-            SPEED_X = speedX;
         }
     }
 
     public static void chaserIsGoing() {
-        if (chaserRight > 0) {
+        if (chaserRight > -125) {
             chaserRight -= 5;
             chaserLeft -= 5;
         } else {
             chaserGoes = false;
-            villainTheme.stop();
+            villainTheme.pause();
             heroTheme.start();
+            heroTheme.setLooping(true);
             obstacleHit = 0;
             chaserIsChasing = false;
         }

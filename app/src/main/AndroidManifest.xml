@@ -13,10 +13,20 @@
         android:theme="@style/Theme.ChaseRunner2"
         tools:targetApi="31">
         <activity
+            android:name=".SplashScreenActivity"
+            android:theme="@style/SplashTheme"
+            android:exported="true"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".MainActivity1"
-            android:exported="false"
             android:configChanges="screenSize|keyboardHidden"
-            android:screenOrientation="landscape"/>
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".MainActivity"
             android:configChanges="screenSize|keyboardHidden"

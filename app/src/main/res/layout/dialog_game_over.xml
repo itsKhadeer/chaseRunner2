@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="250dp">
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="448dp"
-        android:layout_height="213dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="464dp"
+        android:layout_height="500dp"
+        android:layout_marginTop="-130dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/img_2" />
@@ -20,7 +20,8 @@
         android:id="@+id/btnPlayAgain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="150dp"
         android:text="Play Again"
         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
         app:layout_constraintStart_toStartOf="@+id/imageView3" />
@@ -29,7 +30,8 @@
         android:id="@+id/btnHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="51dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="150dp"
         android:text="Home"
         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
         app:layout_constraintEnd_toEndOf="@+id/imageView3" />
