@@ -15,6 +15,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -36,6 +37,7 @@ public class myCanvas extends View {
     static int ScreenWidth = MainActivity.ScreenWidth;
     public static int Score ;
     public static int HighScore;
+    public static boolean gameStartAnimation = false;
     public static volatile boolean gameIsFinallyOver;
     static int STAGE_HEIGHT ;
     static int JUMP_SPEED ;
@@ -153,7 +155,7 @@ public class myCanvas extends View {
 
         Score = 0;
         gameIsFinallyOver = false;
-
+        gameStartAnimation = false;
         STAGE_HEIGHT = 300;
         JUMP_SPEED = 25;
         GRAVITY = 1;
@@ -235,6 +237,7 @@ public class myCanvas extends View {
         poweredDown = false;
         invinciblePowerUp = false;
         hasTakenPowerUp = false;
+
     }
 
 
@@ -596,24 +599,28 @@ public class myCanvas extends View {
         if (chaserGoes) chaserIsGoing();
         if (chaserIsChasing) chaserIsComing();
 
-
         if(gameOver && runnerTop > ScreenHeight) {
             gameIsFinallyOver = true;
         }
         if(!gameIsFinallyOver) {
-            invalidate();
+
+                invalidate();
+
         } else {
             Dialog dialog = new Dialog(getContext());
             dialog.setContentView(R.layout.dialog_game_over);
             Button home = dialog.findViewById(R.id.btnHome);
             Button playAgain = dialog.findViewById(R.id.btnPlayAgain);
             playAgain.setOnClickListener(v -> {
-                Intent intent = new Intent(getContext(), MainActivity1.class);
+                SplashScreenActivity.gameStart = true;
+                Intent intent = new Intent(getContext(), SplashScreenActivity.class);
 
                 getContext().startActivity(intent);
             });
+
             home.setOnClickListener(v -> {
-                Intent intent = new Intent(getContext(), MainActivity.class);
+                SplashScreenActivity.homeStart = true;
+                Intent intent = new Intent(getContext(), SplashScreenActivity.class);
 
                 getContext().startActivity(intent);
             });
