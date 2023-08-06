@@ -14,9 +14,7 @@ public class recViewModel {
         return imgUrl;
     }
 
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
-    }
+//    public void setImgUrl(String imgUrl) {this.imgUrl = imgUrl;}
 
     public String getName() {
         return name;
@@ -30,7 +28,5 @@ public class recViewModel {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+//    public void setDescription(String description) {this.description = description;}
 }

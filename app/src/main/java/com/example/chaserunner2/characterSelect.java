@@ -1,27 +1,15 @@
 package com.example.chaserunner2;
 
-import androidx.annotation.ColorInt;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
-import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.net.URL;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,7 +23,6 @@ public class characterSelect extends AppCompatActivity {
 
     RecyclerView charactersShow;
     Button backButton;
-    String lel = "";
     MyApi api;
     ArrayList<recViewModel> arrCharacterDetail = new ArrayList<>();
     adapterForRecViewCharacterDetails adapter = new adapterForRecViewCharacterDetails(arrCharacterDetail,this);
@@ -72,18 +59,18 @@ public class characterSelect extends AppCompatActivity {
         Call<CharacterResponse> call = api.createCharacter(request);
         call.enqueue(new Callback<CharacterResponse>() {
             @Override
-            public void onResponse(Call<CharacterResponse> call, Response<CharacterResponse> response) {
+            public void onResponse(@NonNull Call<CharacterResponse> call, @NonNull Response<CharacterResponse> response) {
                 if (response.isSuccessful()) {
                     // Request successful, handle the response
                     CharacterResponse characterResponse = response.body();
                     Character character;
 
-                        for(int i = 0; i < characterResponse.getCharacters().size(); i++) {
+                        for(int i = 0; i < Objects.requireNonNull(characterResponse).getCharacters().size(); i++) {
                             character = characterResponse.getCharacters().get(i);
                             String charTypeAndDescription = "Type: " + character.getType() + "\n" +
                                     "Description: " + character.getDescription();
                             arrCharacterDetail.add(new recViewModel(character.getImageUrl(), character.getName(), charTypeAndDescription));
-                            adapter.notifyDataSetChanged();
+                            adapter.notifyItemChanged(i);
                         }
 
                     // Do something with the response data

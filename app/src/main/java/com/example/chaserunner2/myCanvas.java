@@ -23,13 +23,15 @@ import android.widget.Button;
 import java.util.Random;
 
 public class myCanvas extends View {
+
+
     //paints
-    Paint red_brush_fill;
-    Paint brown_brush_fill;
-    Paint black_brush_fill;
-    Paint green_brush_fill;
-    Paint lightBlue_brush_fill;
-    Paint grey_brush_fill;
+    public static Paint red_brush_fill;
+    public static Paint brown_brush_fill;
+    public static Paint black_brush_fill;
+    public static Paint green_brush_fill;
+    public static Paint lightBlue_brush_fill;
+    public static Paint grey_brush_fill;
 
     //constants
     Random r = new Random();
@@ -65,6 +67,9 @@ public class myCanvas extends View {
 
     // constants for the runner(hero mario)
     Bitmap runner;
+    static int mfs;
+    static int currImg;
+    static int n;
     static int runnerLeft ,
             runnerTop ,
             runnerRight ,
@@ -130,9 +135,11 @@ public class myCanvas extends View {
 
     public myCanvas(Context context) {
         super(context);
+        currImg = R.drawable.mf1;
+        n =1 ;
         cloud1 = BitmapFactory.decodeResource(getResources(), R.drawable.img);
         cloud2 = BitmapFactory.decodeResource(getResources(), R.drawable.img);
-        runner = BitmapFactory.decodeResource(getResources(), R.drawable.mario);
+        runner = BitmapFactory.decodeResource(getResources(), marioAnim(currImg));
         chaser = BitmapFactory.decodeResource(getResources(), R.drawable.bowser);
         mushRoom = BitmapFactory.decodeResource(getResources(), R.drawable.mushroom);
         shortObstacle = BitmapFactory.decodeResource(getResources(), R.drawable.smallobstacle);
@@ -151,6 +158,32 @@ public class myCanvas extends View {
         sharedPreferences = context.getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
         HighScore = sharedPreferences.getInt("HighScore", 0);
 
+
+        //colors:
+        red_brush_fill = new Paint();
+        red_brush_fill.setColor(Color.parseColor("#50FF0000"));
+        red_brush_fill.setStyle(Paint.Style.FILL);
+
+        lightBlue_brush_fill = new Paint();
+        lightBlue_brush_fill.setColor(Color.parseColor("#87CEEB"));
+        lightBlue_brush_fill.setStyle(Paint.Style.FILL);
+
+
+        brown_brush_fill = new Paint();
+        brown_brush_fill.setColor(Color.parseColor("#9b7653"));
+        brown_brush_fill.setStyle(Paint.Style.FILL);
+
+        black_brush_fill = new Paint();
+        black_brush_fill.setColor(Color.BLACK);
+        black_brush_fill.setStyle(Paint.Style.FILL);
+
+        green_brush_fill = new Paint();
+        green_brush_fill.setColor(Color.GREEN);
+        green_brush_fill.setStyle(Paint.Style.FILL);
+
+        grey_brush_fill = new Paint();
+        grey_brush_fill.setColor(Color.parseColor("#7F8386"));
+        grey_brush_fill.setStyle(Paint.Style.FILL);
 
 
         Score = 0;
@@ -188,7 +221,7 @@ public class myCanvas extends View {
 
 
         // constants for the runner(hero mario)
-        Bitmap runner;
+        mfs = 4;
         runnerLeft = ScreenWidth / 2 - 70;
         runnerTop = ScreenHeight - STAGE_HEIGHT - 140;
         runnerRight = ScreenWidth / 2 + 70;
@@ -246,30 +279,7 @@ public class myCanvas extends View {
 
         super.onDraw(canvas);
 
-        red_brush_fill = new Paint();
-        red_brush_fill.setColor(Color.parseColor("#50FF0000"));
-        red_brush_fill.setStyle(Paint.Style.FILL);
 
-        lightBlue_brush_fill = new Paint();
-        lightBlue_brush_fill.setColor(Color.parseColor("#87CEEB"));
-        lightBlue_brush_fill.setStyle(Paint.Style.FILL);
-
-
-        brown_brush_fill = new Paint();
-        brown_brush_fill.setColor(Color.parseColor("#9b7653"));
-        brown_brush_fill.setStyle(Paint.Style.FILL);
-
-        black_brush_fill = new Paint();
-        black_brush_fill.setColor(Color.BLACK);
-        black_brush_fill.setStyle(Paint.Style.FILL);
-
-        green_brush_fill = new Paint();
-        green_brush_fill.setColor(Color.GREEN);
-        green_brush_fill.setStyle(Paint.Style.FILL);
-
-        grey_brush_fill = new Paint();
-        grey_brush_fill.setColor(Color.parseColor("#7F8386"));
-        grey_brush_fill.setStyle(Paint.Style.FILL);
 
 
         //setBackGround
@@ -325,6 +335,10 @@ public class myCanvas extends View {
         }
 
         //runner hero
+
+        if(!gameOver) runner = BitmapFactory.decodeResource(getResources(), marioAnim(currImg));
+
+
         RectF runnerHitBox = new RectF(runnerLeft, runnerTop, runnerRight, runnerBottom);
         canvas.drawBitmap(runner, null, runnerHitBox, null);
 
@@ -731,6 +745,49 @@ public class myCanvas extends View {
             heroTheme.setLooping(true);
             obstacleHit = 0;
             chaserIsChasing = false;
+        }
+    }
+    public static int marioAnim(int l) {
+        if(IS_JUMPING) return R.drawable.mfj;
+        if(n == 1) {
+            n++;
+            currImg = R.drawable.mf1;
+            return R.drawable.mf1;
+        } else if (n == mfs*2) {
+            n++;
+            currImg = R.drawable.mf2;
+            return R.drawable.mf2;
+        }
+        else if (n == mfs*3) {
+            n++;
+            currImg = R.drawable.mf3;
+            return R.drawable.mf3;
+        }
+        else if (n == mfs*4) {
+             n++;
+            currImg = R.drawable.mf4;
+            return R.drawable.mf4;
+        }
+        else if (n == mfs*5) {
+            n++;
+            currImg = R.drawable.mf5;
+            return R.drawable.mf5;
+        }
+        else if (n ==  mfs*6) {
+            n++;
+            currImg = R.drawable.mf6;
+            return R.drawable.mf6;
+        }else if(n == mfs*7){
+            n ++;
+            currImg = R.drawable.mf7;
+            return R.drawable.mf7;
+        } else if(n == mfs*8){
+            n =1;
+            currImg = R.drawable.mf1;
+            return R.drawable.mf1;
+        } else {
+            n++;
+            return l;
         }
     }
 
