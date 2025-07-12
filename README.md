@@ -13,7 +13,7 @@ Chase Runner is a 2D side-scrolling infinite runner game built natively using Ja
 
 ## Features
 
-* Native Android implementation using `Canvas` and `SurfaceView`
+* Native Android implementation using `Canvas`
 * Gravity and jump mechanics modeled with projectile motion
 * Obstacle generation and collision detection
 * Power-up logic with state-based effect management
